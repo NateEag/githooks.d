@@ -1,8 +1,6 @@
 #! /bin/bash
 
 # Simple script for multiplexing git hooks.
-#
-#
 
 # Disallow unset variables
 set -o nounset
