@@ -3,12 +3,15 @@ githooks.d
 
 Git's
 [hook system](https://www.kernel.org/pub/software/scm/git/docs/githooks.html)
-is well-thought-out and has a wide range of uses.
+is well-design and has a wide range of uses.
 
-Multiplexing hooks is not a stock feature, is trivial to implement, and is
-therefore a wheel that has been crafted many time.
+That wide range of uses is slightly hampered by the absence of hook
+multiplexing in core git.
 
-This is my version.
+Since the feature is trivial to implement, it is a wheel that has been made
+many times over.
+
+This is my re-invention.
 
 Goals
 -----
