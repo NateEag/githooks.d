@@ -1,0 +1,8 @@
+
+-Add installation UI.
+
+-Support running user githooks.
+
+-Support installing hook packages (need to define what they look like)
+
+-Support activating/deactivating hooks?
