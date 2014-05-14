@@ -3,7 +3,7 @@ githooks.d
 
 Git's
 [hook system](https://www.kernel.org/pub/software/scm/git/docs/githooks.html)
-is well-design and has a wide range of uses.
+is well-designed and has a wide range of uses.
 
 That wide range of uses is slightly hampered by the absence of hook
 multiplexing in core git.
@@ -19,7 +19,7 @@ Goals
 * Do not actively ambush Windows (i.e. don't require symlinks, because
   they're second-class citizens on Windows)
 * Make it easy to install multiple hook collections
-* Be prettier than other solutions I've found
+* Fit my personal aesthetic
 
 Tests
 -----
