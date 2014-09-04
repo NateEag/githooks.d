@@ -41,3 +41,11 @@ teardown() {
     [ "$status" -eq 1 ]
     cd "$cwd"
 }
+
+@test "Runs user hook package." {
+    skip "Not yet implemented"
+}
+
+@test "Runs configured hook packages." {
+    skip "Not yet implemented"
+}
