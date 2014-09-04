@@ -1,8 +1,9 @@
-
 -Add installation UI.
 
--Support running user githooks.
+-Support hook packages. A hook package is a directory containing <hook>.d
+ directories. We run each executable file inside <hook>.d for <hook>. A hook
+ package may contain a .githooks.d.conf file to specify hook packages to run.
 
--Support installing hook packages (need to define what they look like)
+-Run user githooks first (those are just a hook package in ~/githooks.d).
 
--Support activating/deactivating hooks?
+-Support activating/deactivating hooks? Easy - only run executable files.

@@ -18,7 +18,7 @@ Goals
 
 * Do not actively ambush Windows (i.e. don't require symlinks, because
   they're second-class citizens on Windows)
-* Make it easy to install multiple hook collections
+* Support installing and managing hook collections
 * Fit my personal aesthetic
 
 Tests

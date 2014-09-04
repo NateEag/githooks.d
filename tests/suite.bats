@@ -38,6 +38,6 @@ teardown() {
     echo "This line has trailing whitespace    " >> readme.txt
     git add readme.txt
     run git commit -m 'Test commit'
-    cd "$cwd"
     [ "$status" -eq 1 ]
+    cd "$cwd"
 }
