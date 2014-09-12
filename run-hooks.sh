@@ -17,7 +17,7 @@ run_hooks_in_package () {
      hooks_dir="$package_path/$hook_name.d"
 
      exit_status=0
-     for hook in ./$hooks_dir/*; do
+     for hook in $hooks_dir/*; do
          if [[ ! -x $hook ]]; then
              continue
          fi
@@ -38,6 +38,19 @@ run_hooks_in_package () {
 
 hook_name=$(basename "$0")
 
+# Capture stdin for passing to hooks, as some make use of it.
+input=$(cat)
+
+# Run user hooks if available.
+user_hooks_dir="$HOME/.githooks.d"
+if [[ -d "$user_hooks_dir" ]]; then
+    exit_status=$(run_hooks_in_package "$hook_name" "$user_hooks_dir" "$input")
+    if [[ "$exit_status" -ne "0" ]]; then
+        exit "$exit_status"
+    fi
+fi
+
+# Run this repo's hooks, bailing out if they are not found.
 hooks_dir=".git/hooks/$hook_name".d
 if [[ ! -d "$hooks_dir" ]]; then
     # Warn the user and bail out. Since we have a borked install, use a
@@ -46,9 +59,6 @@ if [[ ! -d "$hooks_dir" ]]; then
     exit 1
 fi
 
-# Capture stdin for passing to hooks, as some make use of it.
-input=$(cat)
-
-exit_status=$(run_hooks_in_package "$hook_name" .git/hooks "$input")
+exit_status=$(run_hooks_in_package "$hook_name" ./.git/hooks "$input")
 
 exit "$exit_status"

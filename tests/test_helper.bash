@@ -14,6 +14,19 @@ rm_test_repo () {
     rm -rf "$test_repo_path"
 }
 
+# Add a precommit hook that prevents all commits to package at $1.
+install_precommit_blocker () {
+    # TODO Probably should have a general routine for making an empty hook
+    # package.
+    mkdir -p "$1/pre-commit.d"
+    commit_blocker_path="$1/pre-commit.d/commit-blocker"
+
+    echo "#! /bin/bash" > "$commit_blocker_path"
+    echo "exit 1" >> "$commit_blocker_path"
+
+    chmod 755 "$commit_blocker_path"
+}
+
 # Install run-hooks.sh for the hook named $1 in our test repo.
 # GRIPE This is mis-named. It doesn't install a hook, it installs our hook
 # driver. Also, it probably belongs in a general-purpose installation module.

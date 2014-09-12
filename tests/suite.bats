@@ -43,9 +43,36 @@ teardown() {
 }
 
 @test "Runs user hook package." {
+    # Forge the HOME variable so we don't have to rely on the current user's
+    # home directory for testing.
+    HOME="$BATS_TMPDIR/githooks.d-test-homedir"
+    export HOME
+    hook_package="$HOME/.githooks.d"
+
+    install_hook "pre-commit"
+    install_precommit_blocker "$hook_package"
+
+    cwd=$(pwd)
+
+    cd "$test_repo_path"
+    echo "This line is fine." >> readme.txt
+    git add readme.txt
+    run git commit -m 'Test commit'
+    echo "$output"
+
+    [ $status -eq 1 ]
+
+    cd "$cwd"
+}
+
+@test "Skips user hook package if there isn't one." {
     skip "Not yet implemented"
 }
 
 @test "Runs configured hook packages." {
+    skip "Not yet implemented"
+}
+
+@test "Complains if configured hook packages are missing." {
     skip "Not yet implemented"
 }
