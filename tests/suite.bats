@@ -8,6 +8,7 @@ setup() {
 
 teardown() {
     rm_test_repo
+    rm_test_homedir
 }
 
 @test "Aborts if target hook dir missing" {
@@ -65,8 +66,26 @@ teardown() {
     cd "$cwd"
 }
 
-@test "Skips user hook package if there isn't one." {
-    skip "Not yet implemented"
+@test "Runs successfully if no user hook package exists." {
+    # Forge the HOME variable so we don't have to rely on the current user's
+    # home directory for testing.
+    HOME="$BATS_TMPDIR/githooks.d-test-homedir"
+    export HOME
+    hook_package="$HOME/.githooks.d"
+
+    install_hook "pre-commit"
+
+    cwd=$(pwd)
+
+    cd "$test_repo_path"
+    echo "This line is fine." >> readme.txt
+    git add readme.txt
+    run git commit -m 'Test commit'
+    echo "$output"
+
+    [ $status -eq 0 ]
+
+    cd "$cwd"
 }
 
 @test "Runs configured hook packages." {
