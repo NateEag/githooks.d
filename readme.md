@@ -21,6 +21,20 @@ Goals
 * Allow sharing hook packages between different repositories
 * Fit my personal aesthetic
 
+Hook Packages
+-------------
+
+Hook packages let you share git hooks between multiple projects. Why do that?
+
+* A company's repositories could share a commit message checker, to ensure
+  every commit has a ticket ID in it.
+* A team's style guide could be written as pre-commit and pre-receive hooks, then
+  used to enforce adherence across their projects.
+* Dependency managers like [npm](https://www.npmjs.org/) and
+  [pip](https://pypi.python.org/pypi/pip) are used by a lot of different
+  projects. All those projects could share a generic set of git hooks
+  for updating installed dependencies after pulls, checkouts, and rebases.
+
 Tests
 -----
 
