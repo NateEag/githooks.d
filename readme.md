@@ -3,13 +3,13 @@ githooks.d
 
 Git's
 [hook system](https://www.kernel.org/pub/software/scm/git/docs/githooks.html)
-is well-designed and has a wide range of uses.
+is very useful for automating workflow-related tasks.
 
-That wide range of uses is slightly hampered by the absence of hook
-multiplexing in core git.
+It would be even better if you could register multiple programs for a hook to
+run.
 
-Since the feature is trivial to implement, it is a wheel that has been made
-many times over.
+Since such a feature is trivial to implement, it is a wheel that has been
+crafted many times over.
 
 This is my re-invention.
 
@@ -18,7 +18,7 @@ Goals
 
 * Do not actively ambush Windows (i.e. don't require symlinks, because
   they're second-class citizens on Windows)
-* Support installing and managing hook collections
+* Allow sharing hook packages between different repositories
 * Fit my personal aesthetic
 
 Tests
