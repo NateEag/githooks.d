@@ -21,6 +21,19 @@ Goals
 * Allow sharing hook packages between different repositories
 * Fit my personal aesthetic
 
+Installing
+----------
+
+Not implemented yet, but should look something like:
+
+`run-hooks.sh --install` - set up a repo to use `githooks.d` to run hooks via
+run-hooks.sh. It creates one-line stub scripts for each hook that assume
+`run-hooks.sh` is on $PATH (maybe uses `githooks.conf.sh` to actually ensure
+that?).
+
+This approach differs from the usual "symlink the hook manager" approach so
+that it's still easy to update the hook manager globally on Windows.
+
 Hook Packages
 -------------
 
