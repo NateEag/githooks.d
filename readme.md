@@ -67,13 +67,12 @@ If set, `$GITHOOKS_PACKAGE_PATH` provides the search path for packages,
 functioning like $PATH does for binaries. It defaults to
 `$GIT_DIR/.git/hooks/:$HOME/.githooks.d`.
 
-If you need to install hook packages with the same name, the easiest way is to
-just change one's name.
+If you need to run hook packages with the same name from the same repository,
+the easiest way is to just change one's name.
 
-If other hook packages depend on both hook packages, however, that isn't an
-option. Instead, keep them in different paths, and set `$GITHOOKS_PACKAGE_PATH`
-in `.git/hooks/githooks.conf.sh`.
-
+If other hook packages use them both as dependencies, that isn't an option.
+Instead, keep them in different paths, and use `$GITHOOKS_PACKAGE_PATH` to
+control which one is available when.
 
 Tests
 -----
