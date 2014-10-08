@@ -11,6 +11,14 @@ teardown() {
     rm_test_homedir
 }
 
+@test "Sets up repo for running githooks on install." {
+    skip "Not yet implemented."
+}
+
+@test "Refuses to attempt install if not being run in a git repo." {
+    skip "Not yet implemented."
+}
+
 @test "Aborts if target hook dir missing" {
     install_hook pre-commit
     rmdir $test_repo_path/.git/hooks/pre-commit.d
