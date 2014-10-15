@@ -2,6 +2,8 @@
 
 load test_helper
 
+app_name="../run-hooks.sh"
+
 setup() {
     make_test_repo
 }
@@ -15,8 +17,11 @@ teardown() {
     skip "Not yet implemented."
 }
 
-@test "Refuses to attempt install if not being run in a git repo." {
-    skip "Not yet implemented."
+@test "Should not run install outside a git repo." {
+    run $app_name install "$BATS_TMPDIR"
+
+    [ "$status" -eq 1 ]
+    [ "${lines[0]}" = "Can only be installed in git repositories." ]
 }
 
 @test "Aborts if target hook dir missing" {
@@ -28,9 +33,11 @@ teardown() {
     echo 'Try to commit this.' >> readme.txt
     git add readme.txt
     run git commit -a -m 'Test commit'
-    cd "$cwd"
+
     [ "$status" -eq 1 ]
-    [ "${lines[0]}" = "Could not find .git/hooks/pre-commit.d!" ]
+    [[ "${lines[0]}" =~ "Could not find" ]]
+
+    cd "$cwd"
 }
 
 @test "Exits with last executable hook's non-zero status." {

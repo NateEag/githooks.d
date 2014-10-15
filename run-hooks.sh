@@ -33,13 +33,62 @@ run_hooks_in_package () {
          fi
      done
 
+     # TODO Use return, because I just discovered bash does in fact have this
+     # feature I've always thought it should. DUH.
      echo "$exit_status"
+}
+
+# Set up a git repository to manage its hooks with this script.
+#
+# Optional $1 is the path to target git repo. Otherwise, we assume the current
+# path is part of the target repo.
+install_self () {
+    target_repo="${1-}"
+    if [ -z "target_repo" ]; then
+        target_repo=$(pwd)
+    fi
+
+    old_cwd=$(pwd)
+    cd "$target_repo"
+    git rev-parse --git-dir 2> /dev/null
+    in_git_repo=$?
+
+    if [[ $in_git_repo -ne 0 ]]; then
+        echo "Can only be installed in git repositories."
+
+        exit 1
+    fi
+
+    # TODO Actually install our wrapper scripts.
+
+    cd "$old_cwd"
 }
 
 hook_name=$(basename "$0")
 
+# Handle requests for installs.
+if [[ $# -gt 0 && "$1" == "install" ]]; then
+    if [[ $# -gt 1 ]]; then
+        install_self "$2"
+    else
+        install_self
+    fi
+
+    exit 0
+fi
+
+
 # Capture stdin for passing to hooks, as some make use of it.
 input=$(cat)
+
+# Make sure this repo's hooks are installed correctly.
+hooks_dir=".git/hooks/$hook_name".d
+if [[ ! -d "$hooks_dir" ]]; then
+    # Warn the user and bail out. Since we have a borked install, use a
+    # non-zero exit code to prevent any git operations from taking place.
+    echo "Could not find $hooks_dir!" >&2
+    exit 1
+fi
 
 # Run user hooks if available.
 user_hooks_dir="$HOME/.githooks.d"
@@ -51,13 +100,6 @@ if [[ -d "$user_hooks_dir" ]]; then
 fi
 
 # Run this repo's hooks, bailing out if they are not found.
-hooks_dir=".git/hooks/$hook_name".d
-if [[ ! -d "$hooks_dir" ]]; then
-    # Warn the user and bail out. Since we have a borked install, use a
-    # non-zero exit code to prevent any git operations from taking place.
-    echo "Could not find $hooks_dir!" >&2
-    exit 1
-fi
 
 exit_status=$(run_hooks_in_package "$hook_name" ./.git/hooks "$input")
 
