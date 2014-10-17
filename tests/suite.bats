@@ -13,15 +13,30 @@ teardown() {
     rm_test_homedir
 }
 
-@test "Sets up repo for running githooks on install." {
-    skip "Not yet implemented."
-}
-
 @test "Should not run install outside a git repo." {
     run $app_name install "$BATS_TMPDIR"
 
     [ "$status" -eq 1 ]
     [ "${lines[0]}" = "Can only be installed in git repositories." ]
+}
+
+@test "Install sets up repo to use githooks." {
+    run $app_name install "$test_repo_path"
+
+    # TODO This should all be generalized, since it happens in multiple places.
+    cp $test_repo_path/.git/hooks/pre-commit.sample \
+       $test_repo_path/.git/hooks/pre-commit.d/sample
+    chmod 755 $test_repo_path/.git/hooks/pre-commit.d/sample
+
+    cwd=$(pwd)
+    cd "$test_repo_path"
+    echo "This line has trailing whitespace    " >> readme.txt
+    git add readme.txt
+    run git commit -m 'Test commit'
+
+    [ "$status" -eq 1 ]
+
+    cd "$cwd"
 }
 
 @test "Aborts if target hook dir missing" {
