@@ -3,8 +3,17 @@
 load test_helper
 
 app_name="../run-hooks.sh"
+script_name=$(dirname $0)
+
+# Find the app's dir, so we can add it to PATH.
+pushd $(dirname "$script_name") > /dev/null
+app_dir=$(pwd)
+popd > /dev/null
 
 setup() {
+    PATH=$app_dir:$PATH
+    export PATH
+
     make_test_repo
 }
 
@@ -21,7 +30,7 @@ teardown() {
 }
 
 @test "Install sets up repo to use githooks." {
-    run $app_name install "$test_repo_path"
+    $app_name install "$test_repo_path"
 
     # TODO This should all be generalized, since it happens in multiple places.
     cp $test_repo_path/.git/hooks/pre-commit.sample \
@@ -30,11 +39,13 @@ teardown() {
 
     cwd=$(pwd)
     cd "$test_repo_path"
-    echo "This line has trailing whitespace    " >> readme.txt
+    echo "This line has trailing whitespace    " > readme.txt
     git add readme.txt
+
     run git commit -m 'Test commit'
 
     [ "$status" -eq 1 ]
+    [[ "$lines[0]" =~ "trailing whitespace." ]]
 
     cd "$cwd"
 }

@@ -5,6 +5,16 @@
 # Disallow unset variables
 set -o nounset
 
+
+# Array of all git hook names. I feel like there should be a git command that
+# will generate this, but I couldn't find it. Instead, this is ripped from the
+# githooks(5) manpage.
+hook_names=(applypatch-msg pre-applypatch post-applypatch pre-commit
+            prepare-commit-msg commit-msg post-commit pre-rebase post-checkout
+            post-merge pre-receive update post-receive post-update pre-auto-gc
+            post-rewrite)
+
+
 # Run the hooks identified by $1 in the hook package at $2.
 #
 # Echoes exit status for the package as a return value. It is 0 if all hooks
@@ -22,7 +32,7 @@ run_hooks_in_package () {
              continue
          fi
 
-         "$input" | "$hook" "$@"
+         echo "$input" | "$hook" "$@"
          hook_status=$?
          if [[ $hook_status -ne 0 ]]; then
              # DEBUG Is it better to quit now, or keep running more hooks?
@@ -59,12 +69,20 @@ install_self () {
         exit 1
     fi
 
-    # TODO Actually install our wrapper scripts.
+    hook_cmd=$(basename "$0")
+
+    # TODO Handle pre-existing hooks sanely (fail?)
+    for hook_name in "${hook_names[@]}"; do
+        mkdir .git/hooks/$hook_name.d
+
+        echo '#! /bin/bash' >> .git/hooks/$hook_name
+        echo 'input=$(cat)' >> .git/hooks/$hook_name
+        echo 'echo "$input" | ' "$hook_cmd" ' $hook_name "$@"' >> .git/hooks/$hook_name
+        chmod 755 .git/hooks/$hook_name
+    done
 
     cd "$old_cwd"
 }
-
-hook_name=$(basename "$0")
 
 # Handle requests for installs.
 if [[ $# -gt 0 && "$1" == "install" ]]; then
@@ -78,8 +96,9 @@ if [[ $# -gt 0 && "$1" == "install" ]]; then
 fi
 
 
-# Capture stdin for passing to hooks, as some make use of it.
-input=$(cat)
+# Set hook name then drop it from our arg list, so we can pass $@ to hooks.
+hook_name=$(basename "$1")
+shift
 
 # Make sure this repo's hooks are installed correctly.
 hooks_dir=".git/hooks/$hook_name".d
@@ -89,6 +108,9 @@ if [[ ! -d "$hooks_dir" ]]; then
     echo "Could not find $hooks_dir!" >&2
     exit 1
 fi
+
+# Capture stdin for passing to hooks, as some make use of it.
+input=$(cat)
 
 # Run user hooks if available.
 user_hooks_dir="$HOME/.githooks.d"
