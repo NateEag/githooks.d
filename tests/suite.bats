@@ -51,7 +51,8 @@ teardown() {
 }
 
 @test "Aborts if target hook dir missing" {
-    install_hook pre-commit
+    $app_name install "$test_repo_path"
+
     rmdir $test_repo_path/.git/hooks/pre-commit.d
 
     cwd=$(pwd)
@@ -67,10 +68,8 @@ teardown() {
 }
 
 @test "Exits with last executable hook's non-zero status." {
-    install_hook pre-commit
+    $app_name install "$test_repo_path"
 
-    # GRIPE This is more like installing a hook than the previous step, and
-    # should be generalized into such a method.
     cp $test_repo_path/.git/hooks/pre-commit.sample \
        $test_repo_path/.git/hooks/pre-commit.d/sample
     chmod 755 $test_repo_path/.git/hooks/pre-commit.d/sample
@@ -85,13 +84,14 @@ teardown() {
 }
 
 @test "Runs user hook package." {
+    $app_name install "$test_repo_path"
+
     # Forge the HOME variable so we don't have to rely on the current user's
     # home directory for testing.
     HOME="$BATS_TMPDIR/githooks.d-test-homedir"
     export HOME
     hook_package="$HOME/.githooks.d"
 
-    install_hook "pre-commit"
     install_precommit_blocker "$hook_package"
 
     cwd=$(pwd)
@@ -108,13 +108,17 @@ teardown() {
 }
 
 @test "Runs successfully if no user hook package exists." {
+    $app_name install "$test_repo_path"
+
     # Forge the HOME variable so we don't have to rely on the current user's
     # home directory for testing.
     HOME="$BATS_TMPDIR/githooks.d-test-homedir"
     export HOME
     hook_package="$HOME/.githooks.d"
 
-    install_hook "pre-commit"
+    cp $test_repo_path/.git/hooks/pre-commit.sample \
+       $test_repo_path/.git/hooks/pre-commit.d/sample
+    chmod 755 $test_repo_path/.git/hooks/pre-commit.d/sample
 
     cwd=$(pwd)
 
