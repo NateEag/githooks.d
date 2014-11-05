@@ -15,7 +15,7 @@ rm_test_homedir () {
     rm -rf "$BATS_TMPDIR/githooks.d-test-homedir"
 }
 
-# Remote the test repository from our temporary directory.
+# Remove the test repository from our temporary directory.
 rm_test_repo () {
     rm -rf "$test_repo_path"
 }
