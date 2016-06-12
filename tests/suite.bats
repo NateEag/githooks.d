@@ -115,7 +115,6 @@ teardown() {
     # home directory for testing.
     HOME="$BATS_TMPDIR/githooks.d-test-homedir"
     export HOME
-    hook_package="$HOME/.githooks.d"
 
     cp $test_repo_path/.git/hooks/pre-commit.sample \
        $test_repo_path/.git/hooks/pre-commit.d/sample
