@@ -60,7 +60,7 @@ install_self () {
 
     old_cwd=$(pwd)
     cd "$target_repo"
-    git rev-parse --git-dir 2> /dev/null
+    git rev-parse --git-dir 2> /dev/null > /dev/null
     in_git_repo=$?
 
     if [[ $in_git_repo -ne 0 ]]; then
