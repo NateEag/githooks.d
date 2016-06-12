@@ -77,7 +77,7 @@ install_self () {
 
         echo '#! /bin/bash' >> .git/hooks/$hook_name
         echo 'input=$(cat)' >> .git/hooks/$hook_name
-        echo 'echo "$input" | ' "$hook_cmd" ' $hook_name "$@"' >> .git/hooks/$hook_name
+        echo 'echo "$input" | ' "$hook_cmd" "$hook_name" '"$@"' >> .git/hooks/$hook_name
         chmod 755 .git/hooks/$hook_name
     done
 
