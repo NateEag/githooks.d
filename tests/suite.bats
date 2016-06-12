@@ -2,13 +2,10 @@
 
 load test_helper
 
-app_name="../run-hooks.sh"
-script_name=$(dirname $0)
+# Set up PATH so that the tests can run the script.
+app_dir=$(dirname "$BATS_TEST_DIRNAME")
 
-# Find the app's dir, so we can add it to PATH.
-pushd $(dirname "$script_name") > /dev/null
-app_dir=$(pwd)
-popd > /dev/null
+app_name="run-hooks.sh"
 
 setup() {
     PATH=$app_dir:$PATH
