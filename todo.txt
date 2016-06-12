@@ -1,9 +1,15 @@
--Add installation UI.
+- Take a close look at http://git-hooks.github.io/git-hooks/, which is similar
+  to this project. It didn't exist when I started this, and looks different
+  enough that I'll probably continue mine, but it would be worth understanding
+  it before doing so.
 
--Support hook packages. A hook package is a directory containing <hook>.d
- directories. We run each executable file inside <hook>.d for <hook>. A hook
- package may contain a .githooks.d.conf file to specify hook packages to run.
+- Make hook packages environments isolated from each other.
+  Running each hook package in its own subshell is the obvious way.
 
--Run user githooks first (those are just a hook package in ~/githooks.d).
+- Consider renaming things for consistency (run-hooks.sh could be
+  'githooks.d.sh', and 'githooks.conf.sh' could be 'githooks.d.conf.sh'? Not
+  great names...)
 
--Support activating/deactivating hooks? Easy - only run executable files.
+- Install operation should handle pre-existing hooks sanely.
+
+- Use heredoc for all embedded shell scripts.

@@ -163,7 +163,22 @@ EOF
     skip "Not yet implemented"
 }
 
+@test "Runs each hook package in an isolated environment." {
+    skip "Not yet implemented"
+}
 
 @test "Complains if configured hook packages are missing." {
+    skip "Not yet implemented"
+}
+
+@test "Stops running hooks after any hook fails for blocking hook types." {
+    skip "Not yet implemented"
+}
+
+@test "Runs hooks after one fails for non-blocking hook types." {
+    skip "Not yet implemented"
+}
+
+@test "Lets user override hook failure continuation via env var." {
     skip "Not yet implemented"
 }
