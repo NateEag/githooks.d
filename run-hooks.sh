@@ -84,7 +84,7 @@ install_self () {
 
     # TODO Handle pre-existing hooks sanely (fail?)
     for hook_name in "${hook_names[@]}"; do
-        mkdir .git/hooks/$hook_name.d
+        mkdir -p .git/hooks/$hook_name.d
 
         echo '#! /bin/bash' >> .git/hooks/$hook_name
         echo 'input=$(cat)' >> .git/hooks/$hook_name
