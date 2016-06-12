@@ -3,6 +3,9 @@
   enough that I'll probably continue mine, but it would be worth understanding
   it before doing so.
 
+- Take a close look at http://pre-commit.com/. It might be significantly closer
+  to what I want than the other one in this file, but I'm not sure.
+
 - Make hook packages environments isolated from each other.
   Running each hook package in its own subshell is the obvious way.
 
