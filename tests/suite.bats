@@ -42,7 +42,7 @@ teardown() {
     run git commit -m 'Test commit'
 
     [ "$status" -eq 1 ]
-    [[ "$lines[0]" =~ "trailing whitespace." ]]
+    [[ "${lines[0]}" = *"trailing whitespace"* ]]
 
     cd "$cwd"
 }
@@ -59,11 +59,12 @@ teardown() {
     run git commit -a -m 'Test commit'
 
     [ "$status" -eq 1 ]
-    [[ "${lines[0]}" =~ "Could not find" ]]
+    [[ "${lines[0]}" = *"Could not find"* ]]
 
     cd "$cwd"
 }
 
+# TODO Would be a better test if the exit status were unusual.
 @test "Exits with last executable hook's non-zero status." {
     $app_name install "$test_repo_path"
 
@@ -76,7 +77,10 @@ teardown() {
     echo "This line has trailing whitespace    " >> readme.txt
     git add readme.txt
     run git commit -m 'Test commit'
+
     [ "$status" -eq 1 ]
+    [[ "${lines[0]}" = *"trailing whitespace"* ]]
+
     cd "$cwd"
 }
 
@@ -97,9 +101,9 @@ teardown() {
     echo "This line is fine." >> readme.txt
     git add readme.txt
     run git commit -m 'Test commit'
-    echo "$output"
 
     [ $status -eq 1 ]
+    [[ "${lines[0]}" = *"trailing whitespace"* ]]
 
     cd "$cwd"
 }
@@ -122,8 +126,8 @@ teardown() {
     cd "$test_repo_path"
     echo "This line is fine." >> readme.txt
     git add readme.txt
+
     run git commit -m 'Test commit'
-    echo "$output"
 
     [ $status -eq 0 ]
 
