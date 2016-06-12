@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Simple script for multiplexing git hooks.
+# A script for multiplexing git hooks.
 
 # Disallow unset variables
 set -o nounset
@@ -26,6 +26,17 @@ run_hooks_in_package () {
 
      hooks_dir="$package_path/$hook_name.d"
 
+     if [ -f "$package_path/githooks.conf.sh" ]; then
+         # FIXME This could corrupt the current package's environment.
+         #
+         # Does that imply run_hooks_in_package should spawn a subshell, so it
+         # can't mangle the parent's env?
+         #
+         # Might run into resource limits, since that looks kinda like a
+         # forkbomb.
+         source "$package_path/githooks.conf.sh"
+     fi
+
      exit_status=0
      for hook in $hooks_dir/*; do
          if [[ ! -x $hook ]]; then
@@ -39,13 +50,13 @@ run_hooks_in_package () {
              # Probably depends on the hook type - pre-receive should die fast,
              # but for post-receive you'd want to fire everything you can and log
              # the ones that fail.
+             # So, have sane defaults, then let users override them by setting a
+             # variable in githooks.conf.sh?
              exit_status=$hook_status
          fi
      done
 
-     # TODO Use return, because I just discovered bash does in fact have this
-     # feature I've always thought it should. DUH.
-     echo "$exit_status"
+     return $exit_status
 }
 
 # Set up a git repository to manage its hooks with this script.
@@ -115,7 +126,9 @@ input=$(cat)
 # Run user hooks if available.
 user_hooks_dir="$HOME/.githooks.d"
 if [[ -d "$user_hooks_dir" ]]; then
-    exit_status=$(run_hooks_in_package "$hook_name" "$user_hooks_dir" "$input")
+    run_hooks_in_package "$hook_name" "$user_hooks_dir" "$input"
+    exit_status=$?
+
     if [[ "$exit_status" -ne "0" ]]; then
         exit "$exit_status"
     fi
@@ -123,6 +136,7 @@ fi
 
 # Run this repo's hooks, bailing out if they are not found.
 
-exit_status=$(run_hooks_in_package "$hook_name" ./.git/hooks "$input")
+run_hooks_in_package "$hook_name" ./.git/hooks "$input"
+exit_status=$?
 
 exit "$exit_status"

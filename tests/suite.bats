@@ -64,7 +64,6 @@ teardown() {
     cd "$cwd"
 }
 
-# TODO Would be a better test if the exit status were unusual.
 @test "Exits with last executable hook's non-zero status." {
     $app_name install "$test_repo_path"
 
@@ -84,7 +83,7 @@ teardown() {
     cd "$cwd"
 }
 
-@test "Runs user hook package." {
+@test "Runs user hook package if available." {
     $app_name install "$test_repo_path"
 
     # Forge the HOME variable so we don't have to rely on the current user's
@@ -133,9 +132,37 @@ teardown() {
     cd "$cwd"
 }
 
-@test "Runs configured hook packages." {
+@test "Hook package's githooks.conf.sh is sourced, if extant" {
+    $app_name install "$test_repo_path"
+
+    test_hook_path="$test_repo_path/.git/hooks/pre-commit.d/sample"
+
+    cat > "$test_hook_path" << EOF
+#! /bin/bash
+echo "\$GITHOOKS_TEST_VAR"
+exit \$GITHOOKS_TEST_VAR
+EOF
+
+    chmod 755 "$test_hook_path"
+
+    echo "GITHOOKS_TEST_VAR=7" >> $test_repo_path/.git/hooks/githooks.conf.sh
+    echo "export GITHOOKS_TEST_VAR" >> $test_repo_path/.git/hooks/githooks.conf.sh
+
+    cwd=$(pwd)
+    cd "$test_repo_path"
+    echo "This line has trailing whitespace    " >> readme.txt
+
+    git add readme.txt
+    run git commit -m 'Test commit'
+
+    [ $status -eq 1 ]
+    [ ${lines[0]} == "7" ]
+}
+
+@test "Runs hook packages specified by GITHOOKS_REQUIRED_PACKAGES." {
     skip "Not yet implemented"
 }
+
 
 @test "Complains if configured hook packages are missing." {
     skip "Not yet implemented"
