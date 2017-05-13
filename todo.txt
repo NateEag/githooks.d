@@ -3,11 +3,19 @@
   enough that I'll probably continue mine, but it would be worth understanding
   it before doing so.
 
+- See how git 2.9's core.hooksPath config value impacts this (and similar)
+  projects. At first blush, it strikes me that it obviates the need to install
+  this hook, as you can just point it to your master hook package, but maybe
+  there are larger implications.
+
 - Take a close look at http://pre-commit.com/. It might be significantly closer
   to what I want than the other one in this file, but I'm not sure.
 
 - Make hook packages environments isolated from each other.
   Running each hook package in its own subshell is the obvious way.
+
+- Consider also overcommit, which is a rather heavy-looking Ruby command.
+  https://github.com/brigade/overcommit
 
 - Consider renaming things for consistency (run-hooks.sh could be
   'githooks.d.sh', and 'githooks.conf.sh' could be 'githooks.d.conf.sh'? Not
